@@ -21,7 +21,8 @@ pipeline {
         }
         stage("Pull application from repo") {
             steps {
-                sh "git clone https://github.com/acorriero/myWeatherApp.git"
+                git clone https://github.com/acorriero/myWeatherApp.git"
+                credentialsId: "github-loign-password"
             }
         }
         stage("Build application"){
@@ -43,7 +44,7 @@ pipeline {
                 dir("myWeatherApp") {
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "ilab-aws",
+                        credentialsId: "mylab-aws",
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                             sh 'terraform apply --auto-approve'
