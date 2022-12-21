@@ -21,7 +21,7 @@ pipeline {
         }
         stage("Pull application from repo") {
             steps {
-                git clone https://github.com/acorriero/myWeatherApp.git"
+                git url: "https://github.com/acorriero/myWeatherApp.git", branch: "main",
                 credentialsId: "github-loign-password"
             }
         }
