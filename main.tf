@@ -107,7 +107,7 @@ resource "aws_eip" "web-server-eip" {
   depends_on = [aws_internet_gateway.gw]
 }
 
-# 9. Create Ubuntu server and install/enable apache2
+# 9. Create application server
 resource "aws_instance" "web-server" {
   ami           = "ami-0574da719dca65348"
   instance_type = "t2.micro"
