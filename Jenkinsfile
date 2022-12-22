@@ -12,13 +12,6 @@ pipeline {
     }
 
     stages {
-        stage("Clean Up"){
-            steps {
-                dir("myWeatherApp") {
-                    deleteDir()
-                }
-            }
-        }
         stage("Pull application from repo") {
             steps {
                 git branch: "main",
@@ -26,31 +19,20 @@ pipeline {
                 credentialsId: "github-loign"
             }
         }
-        stage("Build application"){
-            steps {
-                dir("myWeatherApp") {
-                    sh "ls -l"
-                }
-            }
-        }
         stage("Terrform Init"){
             steps {
-                dir("myWeatherApp") {
-                    sh "terraform init"
-                }
+                sh "terraform init"
             }
         }
         stage('Terraform Apply'){
             steps{
-                dir("myWeatherApp") {
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: "mylab-aws",
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                            sh 'terraform apply --auto-approve'
-                        }
-                }
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "mylab-aws",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                        sh 'terraform apply --auto-approve'
+                    }
             }
         }
     }
