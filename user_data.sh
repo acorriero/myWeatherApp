@@ -1,13 +1,11 @@
 #!/bin/bash
 apt-get update -y
-apt-get install docker.io -y
+apt-get install docker.io awscli -y
 systemctl start docker
 systemctl enable docker
 
-cd /tmp
-cat > Dockerfile << EOF
-FROM nginx:1.23
-EOF
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 503680398283.dkr.ecr.us-east-1.amazonaws.com
 
-docker build -t weather:0.1 .
-docker run -d --name weather -p 80:80 --restart always weather:0.1
+docker pull 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app:latest
+
+docker run -d --name weather_app -p 80:80 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app
