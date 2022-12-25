@@ -1,62 +1,62 @@
 # Generate a key pair
-resource "aws_key_pair" "weather-app-key" {
-  key_name = "weather-app-key"
+resource "aws_key_pair" "weather_app_key" {
+  key_name = "weather_app_key"
   public_key = file("/home/jenkins/.ssh/weather_app_rsa.pub")
 }
 
 # Create VPC
-resource "aws_vpc" "weather-app-vpc" {
+resource "aws_vpc" "weather_app_vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
-    Name = "weather-app-vpc"
+    Name = "weather_app_vpc"
   }
 }
 
 # Create Internet Gateway
-resource "aws_internet_gateway" "weather-app-gw" {
-  vpc_id = aws_vpc.weather-app-vpc.id
+resource "aws_internet_gateway" "weather_app_gw" {
+  vpc_id = aws_vpc.weather_app_vpc.id
 }
 
 # Create Custom Route Table
-resource "aws_route_table" "weather-app-rtb" {
-  vpc_id = aws_vpc.weather-app-vpc.id
+resource "aws_route_table" "weather_app_rtb" {
+  vpc_id = aws_vpc.weather_app_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.weather-app-gw.id
+    gateway_id = aws_internet_gateway.weather_app_gw.id
   }
 
   route {
     ipv6_cidr_block        = "::/0"
-    gateway_id = aws_internet_gateway.weather-app-gw.id
+    gateway_id = aws_internet_gateway.weather_app_gw.id
   }
 
   tags = {
-    Name = "weather-app-rtb"
+    Name = "weather_app_rtb"
   }
 }
 
 # Create Subnet
-resource "aws_subnet" "weather-app-subnet" {
-  vpc_id     = aws_vpc.weather-app-vpc.id
+resource "aws_subnet" "weather_app_subnet" {
+  vpc_id     = aws_vpc.weather_app_vpc.id
   cidr_block = var.subnet_prefix
   availability_zone = "us-east-1a"
   tags = {
-    Name = "weather-app-subnet"
+    Name = "weather_app_subnet"
   }
 }
 
 # Associate Subnet with Route Table
 resource "aws_route_table_association" "route-table-a" {
-  subnet_id      = aws_subnet.weather-app-subnet.id
-  route_table_id = aws_route_table.weather-app-rtb.id
+  subnet_id      = aws_subnet.weather_app_subnet.id
+  route_table_id = aws_route_table.weather_app_rtb.id
 }
 
 # Create Security Group
-resource "aws_security_group" "weather-app-sg" {
-  name        = "weather-app-sg"
+resource "aws_security_group" "weather_app_sg" {
+  name        = "weather_app_sg"
   description = "Allow 22, 80 and 443"
-  vpc_id      = aws_vpc.weather-app-vpc.id
+  vpc_id      = aws_vpc.weather_app_vpc.id
 
   ingress {
     description      = "ssh"
@@ -98,18 +98,18 @@ resource "aws_security_group" "weather-app-sg" {
 }
 
 # Create a network interface with an ip in the subnet that was created above.
-resource "aws_network_interface" "weather-app-nic" {
-  subnet_id       = aws_subnet.weather-app-subnet.id
+resource "aws_network_interface" "weather_app_nic" {
+  subnet_id       = aws_subnet.weather_app_subnet.id
   private_ips     = ["10.0.1.50"]
-  security_groups = [aws_security_group.weather-app-sg.id]
+  security_groups = [aws_security_group.weather_app_sg.id]
 }
 
 # Assign an elastic IP to the network interface created above
-resource "aws_eip" "weather-app-eip" {
+resource "aws_eip" "weather_app_eip" {
   vpc                       = true
-  network_interface         = aws_network_interface.weather-app-nic.id
+  network_interface         = aws_network_interface.weather_app_nic.id
   associate_with_private_ip = "10.0.1.50"
-  depends_on = [aws_internet_gateway.weather-app-gw]
+  depends_on = [aws_internet_gateway.weather_app_gw]
 }
 
 # Create application server
@@ -117,11 +117,11 @@ resource "aws_instance" "web-server" {
   ami           = "ami-0574da719dca65348"
   instance_type = "t2.micro"
   availability_zone = "us-east-1a"
-  key_name = "weather-app-key"
+  key_name = "weather_app_key"
   iam_instance_profile = aws_iam_instance_profile.web_app_profile.name
 
   network_interface {
-    network_interface_id = aws_network_interface.weather-app-nic.id
+    network_interface_id = aws_network_interface.weather_app_nic.id
     device_index = 0
   }
 
@@ -142,7 +142,7 @@ resource "aws_instance" "web-server" {
 
 # General information to output
 output "server_public_ip" {
-  value = aws_eip.weather-app-eip.public_ip
+  value = aws_eip.weather_app_eip.public_ip
 }
 
 output "server_private_ip" {
