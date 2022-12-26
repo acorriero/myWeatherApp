@@ -1,4 +1,9 @@
-FROM nginx:1.23
+FROM python:3
 
-WORKDIR /usr/share/nginx/html
-COPY ./index.html /usr/share/nginx/html
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY main.py .
+
+CMD [ "streamlit", "run", "/app/main.py" ]

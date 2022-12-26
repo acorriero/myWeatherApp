@@ -125,14 +125,20 @@ resource "aws_instance" "web-server" {
     device_index = 0
   }
 
+  # Push docker image to ECR repository
   provisioner "local-exec" {
-    command = "docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest && aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
+    command = <<-EOF
+      docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest 
+      && aws ecr get-login-password --region ${var.region} 
+      | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} 
+      && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
+    EOF
   }
 
   user_data = "${file("user_data.sh")}"
 
   tags = {
-    Name = "myWeatherApp"
+    Name = "my_weather_app"
   }
   depends_on = [
     aws_ecr_repository.my_weather_app,
