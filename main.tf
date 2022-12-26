@@ -1,7 +1,7 @@
 # Generate a key pair
 resource "aws_key_pair" "weather_app_key" {
   key_name = "weather_app_key"
-  public_key = file("/home/jenkins/.ssh/weather_app_rsa.pub")
+  public_key = file("/var/jenkins_home/.ssh/weather_app_rsa.pub")
 }
 
 # Create VPC
