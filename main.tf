@@ -1,7 +1,8 @@
 # Generate a key pair
 resource "aws_key_pair" "weather_app_key" {
   key_name = "weather_app_key"
-  public_key = file("/var/jenkins_home/.ssh/weather_app_rsa.pub")
+  public_key = file("/home/jenkins/.ssh/weather_app_rsa.pub")
+  #public_key = file("/var/jenkins_home/.ssh/weather_app_rsa.pub")
 }
 
 # Create VPC
@@ -127,12 +128,7 @@ resource "aws_instance" "web-server" {
 
   # Push docker image to ECR repository
   provisioner "local-exec" {
-    command = <<-EOF
-      docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest 
-      && aws ecr get-login-password --region ${var.region} 
-      | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} 
-      && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
-    EOF
+    command = "docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest && aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
   }
 
   user_data = "${file("user_data.sh")}"
