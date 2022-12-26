@@ -8,4 +8,4 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 docker pull 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app:latest
 
-docker run -d --name weather_app -p 80:80 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app
+docker run -d --name my_weather_app -p 80:8501 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app
