@@ -1,8 +1,11 @@
+# This won't work because of issues with Docker in Docker
+# Instead install Jenkins, Docker, and Terraform on a host
+
 docker login -u acorriero
 
 docker run -d --name jenkins \
     -v /home/jenkins:/var/jenkins_home \
-    -v /var/run/docker.sock:/var/run/docker.sock \
+    # -v /var/run/docker.sock:/var/run/docker.sock \
     -p 8080:8080 -p 50000:50000 \
     --restart=on-failure \
     acorriero/jenks_terra:0.2
