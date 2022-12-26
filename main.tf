@@ -32,7 +32,7 @@ resource "aws_route_table" "weather_app_rtb" {
     gateway_id = aws_internet_gateway.weather_app_gw.id
   }
 
-  tags = {docker commit jenkins jenks_terra:0.2
+  tags = {
     Name = "weather_app_rtb"
   }
 }
