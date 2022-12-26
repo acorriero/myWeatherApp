@@ -1,8 +1,8 @@
 # Generate a key pair
 resource "aws_key_pair" "weather_app_key" {
   key_name = "weather_app_key"
-  public_key = file("/home/jenkins/.ssh/weather_app_rsa.pub")
-  #public_key = file("/var/jenkins_home/.ssh/weather_app_rsa.pub")
+  # public_key = file("/home/jenkins/.ssh/weather_app_rsa.pub")
+  public_key = file("/var/jenkins_home/.ssh/weather_app_rsa.pub")
 }
 
 # Create VPC
@@ -32,7 +32,7 @@ resource "aws_route_table" "weather_app_rtb" {
     gateway_id = aws_internet_gateway.weather_app_gw.id
   }
 
-  tags = {
+  tags = {docker commit jenkins jenks_terra:0.2
     Name = "weather_app_rtb"
   }
 }
