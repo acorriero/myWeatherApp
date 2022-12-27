@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update -y
-apt-get install docker.io -y
+apt-get install docker.io unzip -y
 systemctl start docker
 systemctl enable docker
 
