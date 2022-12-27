@@ -130,7 +130,7 @@ resource "aws_instance" "web-server" {
     command = "docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest && aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
   }
 
-  user_data = "${file("user_data.sh")}"
+  user_data = data.template_file.user_data.rendered
 
   tags = {
     Name = "my_weather_app"
