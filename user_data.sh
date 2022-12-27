@@ -9,6 +9,8 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 
+sleep(30)
+
 docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) 503680398283.dkr.ecr.us-east-1.amazonaws.com
 
 docker pull 503680398283.dkr.ecr.us-east-1.amazonaws.com/my_weather_app:latest
