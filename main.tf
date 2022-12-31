@@ -127,10 +127,26 @@ resource "aws_instance" "web-server" {
 
   # Push docker image to ECR repository
   provisioner "local-exec" {
-    command = "docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest && aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url} && docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
+    inline = [
+      "docker tag my_weather_app:latest ${aws_ecr_repository.my_weather_app.repository_url}:latest",
+      "aws ecr get-login-password --region ${var.region} \
+        | docker login --username AWS --password-stdin ${aws_ecr_repository.my_weather_app.repository_url}"
+      "docker push ${aws_ecr_repository.my_weather_app.repository_url}:latest"
+    ]
   }
 
-  user_data = data.template_file.user_data.rendered
+  provisioner "remote-exec" {
+    inline = [
+      "apt-get update",
+      "apt-get install docker.io awscli -y",
+      "systemctl start docker",
+      "systemctl enable docker",
+      "aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${var.ecr_rep}",
+      "docker pull ${var.ecr_rep}:latest",
+      "docker run -d --name my_weather_app -p 80:8501 ${var.ecr_rep}:latest"
+    ]
+  }
+  # user_data = data.template_file.user_data.rendered
 
   tags = {
     Name = "my_weather_app"
