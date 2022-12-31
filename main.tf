@@ -136,10 +136,10 @@ resource "aws_instance" "web-server" {
   }
 
   connection {
-    type     = "ssh"
-    user     = "ubuntu"
-    private_key = file("")
-    host     = self.public_ip
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("/var/lib/jenkins/.ssh/weather_app_rsa")
+    host        = self.public_ip
   }
 
   provisioner "remote-exec" {
