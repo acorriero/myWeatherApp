@@ -15,7 +15,7 @@ pipeline {
         stage("Pull application from repo") {
             steps {
                 git branch: "main",
-                url: "git@github.com:acorriero/weather_app.git",
+                url: "git@github.com:acorriero/my_tf_project.git",
                 credentialsId: "github-loign"
             }
         }
