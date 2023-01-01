@@ -1,7 +1,7 @@
 # my_weather_app
 Complete CI/CD pipeline that puts a docker based weather app on an ec2 instance
 
-- Install Jenkins, Docker, and Terraform on a host
+- Install Jenkins, Docker, aws-cli and Terraform on a host
 - Jenkins:
   - Install AWS Credentials Plugin
   - Set up git ssh credentials with ID github-loign
