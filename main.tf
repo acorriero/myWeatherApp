@@ -136,6 +136,13 @@ resource "aws_instance" "web-server" {
   }
 
   provisioner "file" {
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key =  file("/var/lib/jenkins/.ssh/weather_app_rsa")
+      host     = self.public_ip
+    }
+    
     content =<<-EOF
       #!/bin/bash
       sudo apt-get update
