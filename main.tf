@@ -138,18 +138,25 @@ resource "aws_instance" "web-server" {
   provisioner "file" {
     content =<<-EOF
       #!/bin/bash
-      apt-get update
-      apt-get install docker.io awscli -y
-      systemctl start docker
-      systemctl enable docker
-      aws ecr get-login-password --region "${var.region}" | docker login --username AWS --password-stdin "${var.ecr_rep}"
-      docker pull "${var.ecr_rep}:latest"
-      docker run -d --name my_weather_app -p 80:8501 "${var.ecr_rep}:latest"
+      sudo apt-get update
+      sudo apt-get install docker.io awscli -y
+      sudo systemctl start docker
+      sudo systemctl enable docker
+      sudo aws ecr get-login-password --region "${var.region}" | docker login --username AWS --password-stdin "${var.ecr_rep}"
+      sudo docker pull "${var.ecr_rep}:latest"
+      sudo ocker run -d --name my_weather_app -p 80:8501 "${var.ecr_rep}:latest"
     EOF
     destination = "/tmp/setup_script.sh"
   }
 
   provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = "ubuntu"
+      private_key =  file("/var/lib/jenkins/.ssh/weather_app_rsa")
+      host     = self.public_ip
+    }
+    
     inline = [
     "/tmp/setup_script.sh"
     ]
