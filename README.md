@@ -1,5 +1,5 @@
 # my_weather_app
-Complete CI/CD pipeline that puts a docker based weather app on an ec2 instance
+Complete CI/CD pipeline that puts a Docker/Python created weather app on an ec2 instance
 
 - Install Jenkins, Docker, aws-cli and Terraform on a host
 - Jenkins:
